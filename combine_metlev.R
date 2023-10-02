@@ -8,11 +8,15 @@ selected_sites <- read.csv( all_suitable_sites, header = TRUE, stringsAsFactors 
 selected_sites <- selected_sites[,2]
 selected_sites <- data.frame(selected_sites)
 colnames(selected_sites)[1] <- "index"
-
 data0 <- selected_sites
-for(i in 1:nrow(names))
+# added this to remove sex chromosomes, rather than selecting autosomes
+data0 <- subset(data0, !grepl("chrY|chrX", index))
+# move idx up by 1 since 0 is at 1,1
+for(i in 2:nrow(names))
 {
-  data1 <- fread(paste0("zcat ", names[i,1]), header = TRUE, stringsAsFactors = FALSE)
+  data1 <- fread(names[i,1], header = TRUE, stringsAsFactors = FALSE)
+  # don't need zcat
+  #data1 <- fread(paste0("zcat ", names[i,1]), header = TRUE, stringsAsFactors = FALSE)
   data1 <- data.frame(data1)
   data1 <- data1[,c("index","metlev")]
   colnames(data1)[2]<- paste0("metlev",i)

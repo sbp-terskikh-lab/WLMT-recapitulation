@@ -14,7 +14,7 @@ library(stringr)
 #locations_of_samples_of_interest is a table where the first row contains name of a sample 
 # and the second - path to the corresponding *.bismark.cov.gz file produced by Bismark v0.15.0
 
-names <- read.table(locations_of_samples_of_interest, stringsAsFactors = FALSE, header = TRUE)
+names <- read.table(locations_of_samples_of_interest, stringsAsFactors = FALSE, header = TRUE, sep = ',')
 for(i in 1:nrow(names))
 {
   print(i)
@@ -25,7 +25,19 @@ for(i in 1:nrow(names))
     print(system.time({  data0 <- fread(names[i,2],header = FALSE, stringsAsFactors = FALSE) }))
   }
   else
-  {print(system.time({  data0 <- fread(paste0("zcat ", names[i,2])) }))}
+    # I modified this since zcat was running an error and fread can read.gz files
+#  {print(system.time({  data0 <- fread(paste0("zcat ", names[i,2])) }))}
+  {
+    print(system.time({
+      data0 <- fread(names[i, 2], header = FALSE, stringsAsFactors = FALSE)
+    }))
+  }
+  # Create the output directory if it doesn't exist
+  # added this since I needed to make the dir
+  outdir <- "metcov"
+  if (!file.exists(outdir)) {
+    dir.create(outdir)
+  }
   print(system.time({  
     index <- paste0(data0[[1]],"_",data0[[2]])
     coverage <- data0[[5]] + data0[[6]]
