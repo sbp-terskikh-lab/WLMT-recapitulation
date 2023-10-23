@@ -1,0 +1,37 @@
+
+# Adapter trimming, use rrbs presets, paired sequence presets, clip 15 bp, give output dir
+trim_galore --rrbs --paired --three_prime_clip_R1 15 --three_prime_clip_R2 15 -o <PATH/TO/OUTPUT/DIR1> <PATH/TO/RAW/DATA/SRRNUMBER_pass_1.fastq.gz> <PATH/TO/RAW/DATA/SRRNUMBER_pass_2.fastq.gz>
+
+# Alignment with Reference Genome
+bismark --parallel <N_parallel> -o <PATH/TO/OUTPUT/DIR2> --gzip -genome <genome_folder> -1 <PATH/TO/OUTPUT/DIR1/SRRNUMBER_pass_1_val_1.fq.gz> -2 <PATH/TO/OUTPUT/DIR1/SRRNUMBER_pass_1_val_1.fq.gz>
+ex:
+bismark --parallel 8 -o ./data/test_results/test_10092023/alignments --gzip -genome ./data/genome_folder/grcm38 -1 ./data/test_results/test_10092023/trimmed/SRR3440565_pass_1_val_1.fq.gz -2 ./data/test_results/test_10092023/trimmed/SRR3440565_pass_2_val_2.fq.gz
+
+# Extract methylation coverage
+bismark_methylation_extractor -p --comprehensive --bedGraph --merge_non_cpg --gzip --parallel N_parallel -o <PATH/TO/OUTPUT/DIR3>  <PATH/TO/OUTPUT/DIR2/SRRNUMBER_pass_1_val_1_bismark_bt2_pe.bam
+ex: 
+bismark_methylation_extractor -p --comprehensive --bedGraph --merge_non_cpg --gzip --parallel 10 -o ./data/test_results/test_10092023/bismark_methylation_extractor  ./data/test_results/test_10092023/alignments/SRR3440565_pass_1_val_1_bismark_bt2_pe.bam
+
+
+
+p = paired end
+comprehensive = merge strands
+bedgraph = generate bedgraph and coverage files
+merge_non_cpg = merge outputs into two contexts: CpG and non CpG
+gzip = save in gzip format
+parallel = number of parallel processes to spawn
+o = output directory
+
+
+NOTE:
+
+2.9T    ./kenta
+2.4T    ./mibioage_paper_results
+856G    ./Sequence
+821G    ./Original_data_martin
+775G    ./mehran
+716G    ./mibioage_paper_original_data
+621G    ./martin
+586G    ./results
+4.0K    ./Original_data
+4.0K    ./cdatals

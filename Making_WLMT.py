@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 matplotlib.style.use('ggplot')
 get_ipython().magic('matplotlib inline')
 get_ipython().magic('pylab inline')
-from sklearn import cross_validation, grid_search, linear_model, metrics, pipeline, preprocessing
+from sklearn import model_selection, linear_model, metrics
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 
@@ -272,7 +272,7 @@ current_regression_alpha = [100]
 current_regression_l1_ratio = [0.6]
 
 ################################
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 
 (X_train, 
  X_test, 
@@ -281,7 +281,7 @@ from sklearn.cross_validation import train_test_split
                                      random_state=current_random_state,stratify=tissueslist)
 ################################
 
-cv = cross_validation.StratifiedKFold(y_train, n_folds = current_n_folds, shuffle = False, random_state = 23)
+cv = model_selection.StratifiedKFold(y_train, n_folds = current_n_folds, shuffle = False, random_state = 23)
 ################################
 
 #scaler = StandardScaler()
@@ -298,7 +298,7 @@ parameters_grid = {
 }  
 ################################
 
-grid_pensf = grid_search.GridSearchCV(pensf_pipeline,parameters_grid,cv=cv,scoring=scorer,n_jobs=10)
+grid_pensf = model_selection.GridSearchCV(pensf_pipeline,parameters_grid,cv=cv,scoring=scorer,n_jobs=10)
 ################################
 
 
